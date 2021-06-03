@@ -6,7 +6,7 @@
 ## 工程介绍
 
 ### 项目获取
-`eap-demo-miplug` 项目链接 : 【https://gitee.com/edgeros/eap-demo-miplug.git】, 项目结构说明：
+`eap-demo-miplug` 项目链接 : 【 https://gitee.com/edgeros/eap-demo-miplug.git  】或 【 https://github.com/edgeros/eap-demo-miplug.git 】, 项目结构说明：
 
 ```
 eap-demo-miplug

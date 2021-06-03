@@ -10,9 +10,8 @@
  *
  */
 
-var WebApp = require('webapp');
+const WebApp = require('webapp');
 var Device = require('device');
-var iosched = require('iosched');
 
 /* XiaoMi plug device */
 var miplug = undefined;
@@ -84,7 +83,6 @@ var io = require('socket.io')(
  * Client connect & disconnect
  */
 io.on('connection', function(sockio) {
-
 	sockio.on('miplug-control', function(msg) {
 		if (miplug && miplug.devid) {
 			console.log('Client send message:', JSON.stringify(msg));
@@ -171,7 +169,5 @@ function miplugRemove() {
 	}
 }
 
-/*
- * Event loop
- */
-iosched.forever();
+/* Event loop */
+require('iosched').forever();

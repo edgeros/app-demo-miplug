@@ -19,23 +19,23 @@ eap-demo-miplug
 ### 功能描述
 搜索设备列表：此功能查询连接上 `EdgerOS` 已授权的所有 `miplug` 设备，如下图：
 
-<div align="center"> <img src="./res/miplug/miplug_list.gif" /> </div>
+<div align="center"> <img src="../image/tutorial_adv/miplug/miplug_list.gif" /> </div>
 
 设备上线提示：设备上线后 `EAP` 自动弹出消息提示用户，如下图：
 
-<div align="center"> <img src="./res/miplug/miplug_join.gif" /> </div>
+<div align="center"> <img src="../image/tutorial_adv/miplug/miplug_join.gif" /> </div>
 
 设备下线提示：设备下线后会自动弹出消息提示用户，如下图：
 
-<div align="center"> <img src="./res/miplug/miplug_lost.gif" /> </div>
+<div align="center"> <img src="../image/tutorial_adv/miplug/miplug_lost.gif" /> </div>
 
 选择设备：【选择设备】-> 【设备列表】，应用也会切换到对当前设备的控制，如下图：
 
-<div align="center"> <img src="./res/miplug/miplug_select.gif" /> </div>
+<div align="center"> <img src="../image/tutorial_adv/miplug/miplug_select.gif" /> </div>
 
 开关控制：在设备详情页通过点击按钮来实现对小米插座的开关控制， 如下图：
 
-<div align="center"> <img src="./res/miplug/miplug_control.gif" /> </div>
+<div align="center"> <img src="../image/tutorial_adv/miplug/miplug_control.gif" /> </div>
 
 ### 前端构建
 + 技术架构
@@ -90,13 +90,13 @@ miplug
 - 按小米插座使用说明，长按插座开关按钮直到指示灯闪烁开启搜索。
 - 在 【爱智】-> 【设备管理】中搜索到设备后选择添加，在设备列表中可以查看新增的小米插座设备。
 
-<div align="center"> <img src="./res/miplug/miplug_device.gif" /> </div>
+<div align="center"> <img src="../image/tutorial_adv/miplug/miplug_device.gif" /> </div>
 
 ### 权限配置
 
 创建好应用并安装部署后， 打开 【爱智】-> 【隐私设置】-> 【设备权限】，在设备列表中选择刚连接的小米插座设备，在【已安装应用】列表中选择开发的小米插座应用，打开将其选项开关。
 
-<div align="center"> <img src="./res/miplug/miplug_permission.gif" /> </div>
+<div align="center"> <img src="../image/tutorial_adv/miplug/miplug_permission.gif" /> </div>
 
 ## 示例分析
 `eap-demo-miplug` 后端项目中，有插座需要使用  `Device` 模块， 用于发现和管理设备，创建设备对象，代码位于：【eap-demo-miplug/miplug/main.js】。

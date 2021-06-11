@@ -31,21 +31,22 @@ app.use(WebApp.static('./public'));
  * Select device
  */
 app.post('/api/select/:devid', function(req, res) {
-	if (typeof req.params.devid !== 'string') {
-		res.sendStatus(400);
-		return;
-	} else {
-		miplugRemove();
-	}
-
 	miplug = new Device();
 	miplug.request(req.params.devid, function(error) {
 		if (error) {
-			res.sendStatus(503, error.message);
+			res.send({
+				result: false,
+				code: 50004,
+				message: `您没有此设备权限！：${error.message}`
+			});
 			miplug = undefined;
 
 		} else {
-			res.send();
+			res.send({
+				result: true,
+				code: 20000,
+				message: 'success'
+			});
 			miplug.on('lost', miplugRemove);
 
 			miplug.on('message', function(msg) {
@@ -92,7 +93,7 @@ io.on('connection', function(sockio) {
 				}
 			}, 3);
 		} else {
-			sockio.emit('miplug-error', { error: 'No device!' });
+			sockio.emit('miplug-error', { code: 50002, error: '无效设备!' });
 		}
 	});
 

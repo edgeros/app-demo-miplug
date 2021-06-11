@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-    <van-nav-bar title="设备列表" />
-    <van-list>
+    <van-nav-bar title="设备列表" fixed="true" safe-area-inset-top />
+    <van-pull-refresh style="min-height: 100vh; margin-top: 46px"  v-model="isLoading" @refresh="onRefresh">
+      <van-list style="min-height: 100vh">
       <van-cell
         v-for="(miPlug, index) of miPlugs"
         :title="miPlug.alias"
@@ -20,20 +21,20 @@
         </template>
       </van-cell>
     </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 <script>
 import axios from "axios";
 import { getHeaders } from "../service/auth";
+import { edger } from "@edgeros/web-sdk";
 
 export default {
   name: "Home",
   data() {
     return {
       miPlugs: [],
-      connectError: 0,
-      connectTimeout: 0,
-      error: 0,
+      isLoading: false
     };
   },
   sockets: {
@@ -42,24 +43,12 @@ export default {
       console.log("socket connected");
     },
     connectError() {
-      this.connectError++;
-      if (this.connectError <= 3) {
-        this.$notify({ type: "danger", message: "连接错误！" });
-      }
       console.log("socket connect error");
     },
     connectTimeout() {
-      this.connectTimeout++;
-      if (this.connectTimeout <= 3) {
-        this.$notify({ type: "danger", message: "连接超时！" });
-      }
       console.log("socket connect timeout");
     },
     error() {
-      this.error++;
-      if (error <= 3) {
-        this.$notify({ type: "danger", message: "发生错误！" });
-      }
       console.log("error");
     },
     disconnect() {
@@ -67,56 +56,63 @@ export default {
     },
   },
   methods: {
+    onRefresh() {
+      setTimeout(() => {
+        this.isLoading = false;
+        this.getMIPlugList();
+      }, 1000);
+    },
     initSocket() {
       this.$socket.$subscribe("miplug-lost", (devid) => {
-        this.$notify({
-          type: "primary",
-          message: `${devid} 设备已下线`,
-        });
+        edger.notify.info(`${devid} 设备已下线`);
         this.miPlugs = this.miPlugs.filter((miPlug) => {
           miPlug.devid !== devid;
         });
       });
       this.$socket.$subscribe("miplug-join", (miPlug) => {
-        this.$notify({
-          type: "primary",
-          message: `新上线了 ${miPlug.alias} 设备`,
-        });
+        edger.notify.info(`新上线了 ${miPlug.alias} 设备`);
         this.miPlugs.push(miPlug);
       });
       this.$socket.$subscribe("miplug-error", (error) => {
-        this.$notify({ type: "danger", message: error.error });
+        if (error.code === 50002) {
+          edger.notify.error(`无效设备！`);
+        } else {
+          edger.notify.error(error.message);
+        }
       });
     },
     getMIPlugList() {
       this.$socket.client.emit("miplug-list", (data) => {
+        console.log(data);
         this.miPlugs = data;
-        console.log(this.miPlugs);
+        if (this.miPlugs.length === 0) {
+          edger.notify.error(`未发现设备！`);
+        }
       });
     },
     getMIPlugDetail(miPlug) {
       console.log(miPlug);
       axios
         .post(`/api/select/${miPlug.devid}`, {}, { headers: getHeaders() })
-        .then(() => {
-          this.$router.push({ name: "Details", params: miPlug });
+        .then((res) => {
+          if (res.data.result) {
+            this.$router.push({ name: "Details", params: miPlug });
+          } else {
+            if (res.data.code === 50004) {
+              edger.notify.error(`您没有此设备权限！`);
+            } else {
+              edger.notify.error(`未知错误！`);
+            }
+          }
         })
         .catch((error) => {
-          if (error.status === 400) {
-            this.$notify({ type: "danger", message: "参数错误！" });
-          } else if (error.status === 503) {
-            this.$notify({ type: "danger", message: error.error });
-            console.log(error.error);
-          } else if (error.status === 403) {
-            this.$notify({ type: "danger", message: "无访问权限！" });
-          } else {
-            this.$notify({ type: "danger", message: "未知错误！" });
-          }
+          console.error(error);
         });
     },
   },
   created() {
     this.initSocket();
+    this.getMIPlugList();
   },
 };
 </script>

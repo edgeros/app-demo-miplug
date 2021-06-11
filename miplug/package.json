@@ -1,6 +1,6 @@
 {
     "name": "com.acoinfo.miplug",
-    "version": "0.0.2",
+    "version": "0.0.24",
     "description": "小米智能插座控制",
     "main": "main.js",
     "scripts": {

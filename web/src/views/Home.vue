@@ -66,7 +66,7 @@ export default {
       this.$socket.$subscribe("miplug-lost", (devid) => {
         edger.notify.info(`${devid} 设备已下线`);
         this.miPlugs = this.miPlugs.filter((miPlug) => {
-          miPlug.devid !== devid;
+          return miPlug.devid !== devid;
         });
       });
       this.$socket.$subscribe("miplug-join", (miPlug) => {
